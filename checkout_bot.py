@@ -20,9 +20,12 @@ def parse_fuzzy_date(value):
     today = datetime.today().date()
 
     #if Expected Return Date entry is a string
-    if isinstance(value, str):
+    if isinstance(value, (datetime, pd.Timestamp)):
+        return value.date()
+    
+    #if Expected Return Data is a string
+    elif isinstance(value, str):
         val = value.strip().lower()
-
         if val in ("eod", "end of day"):
             return today
         elif val in ("tomorrow", "tmrw"):
@@ -40,9 +43,7 @@ def parse_fuzzy_date(value):
                 return pd.NaT
         else:
             return pd.NaT
-    #if Expected Return Date entry is a datetime
-    elif isinstance(value, (datetime, pd.Timestamp)):
-        return value.date()
+        
     #if Expected Return Date is something else
     else:
         return pd.NaT
