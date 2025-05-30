@@ -11,13 +11,12 @@ This bot reads an Excel file of equipment checkouts and emails professors if the
     - Call inspect_rows() to interactively view rows
 
 
-## Current Goal
+## Program Steps
 
 ✅ Load `.xlsx` file  
-✅ Add 'Parsed Return Date' column  
-🔜 Print the first row  
-🔜 Identify overdue items  
-🔜 Send emails to responsible professors
+✅ Add 'Parsed Return Date' column to dataframe
+🔜 Identify overdue items and make a list
+🔜 Send emails to responsible professors on the list
 
 ## How to Run
 

@@ -3,7 +3,7 @@
 import pandas as pd
 from datetime import datetime, timedelta
 import re
-from parse_fuzzy_date import FuzzyDateParser
+from FuzzyDateParser import FuzzyDateParser
 
 
 
@@ -53,11 +53,7 @@ def inspect_unique_values(df):
     for key, value in nondatetimes.items():
         print(f"{key} -> {value}")
  
-def parse_row(row):
-    parser = FuzzyDateParser()
-    value = row['Expected Return Date']
-    base = row['Date'] if isinstance(row['Date'], (datetime, pd.Timestamp)) else None
-    return parser.parse(value, base_date=base)
+
 
 
 def print_overdue_rows(df):
@@ -87,7 +83,8 @@ if __name__ == "__main__":
         inspect_unique_values(df)
 
     if df is not None:
-        df['Parsed Return Date'] = df.apply(parse_row, axis=1)
+        parser = FuzzyDateParser(df)
+        parser.df['Parsed Return Date'] = parser.df.apply(parser.parse_row, axis=1)
     
     print_overdue_rows(df)
 

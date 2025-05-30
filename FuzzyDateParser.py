@@ -3,7 +3,9 @@ from dateutil import parser
 import re
 
 class FuzzyDateParser:
-    def __init__(self, base_date=None):
+    def __init__(self, df, base_date=None):
+
+        self.df = df
         self.base_date = base_date or datetime.today().date()
 
         # Common normalized mappings
@@ -46,6 +48,11 @@ class FuzzyDateParser:
         else:
             return datetime(year, 12, 15).date()  # Fall
 
+    def parse_row(self, row):
+        exp_ret_date = row['Expected Return Date']
+        base_date = row['Date'] if isinstance(row['Date'], (datetime, pd.Timestamp)) else None
+        return parser.parse(exp_ret_date, base_date=base_date)
+    
     def parse(self, date_str, base_date=None):
         if not date_str or not isinstance(date_str, str):
             return None
