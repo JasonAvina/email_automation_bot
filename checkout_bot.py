@@ -3,11 +3,10 @@
 import pandas as pd
 from datetime import datetime, timedelta
 import re
+from parse_fuzzy_date import FuzzyDateParser
 
 
-# ------------------------------
-# Load the Excel file
-# ------------------------------
+
 def load_checkout_data(file_path):
     """Load Excel file into a pandas DataFrame."""
     try:
@@ -18,62 +17,6 @@ def load_checkout_data(file_path):
         print(f"Failed to load file: {e}")
         return None
 
-
-# ------------------------------
-# Parse fuzzy employee-entered date strings
-# ------------------------------
-def parse_fuzzy_date(value):
-    # Get today's date
-    today = datetime.today().date()
-
-    # If expected return date is a DATETIME
-    if isinstance(value, (datetime, pd.Timestamp)):
-        return value.date()
-    
-    # If expected return date is a STRING
-    elif isinstance(value, str):
-        val = value.strip().lower()
-        if val in ("eod", "end of day"):
-            return today
-        elif val in ("tomorrow", "tmrw"):
-            return today + timedelta(days=1)
-        elif val in ("end of week", "eow"):
-            days_ahead = 4 - today.weekday()  # Friday is 4
-            if days_ahead <= 0:  # If today is Friday or weekend
-                days_ahead += 7
-            return today + timedelta(days=days_ahead)
-        elif "monday" in val:
-            days_ahead = 0 - today.weekday()  # Monday is 0
-            if days_ahead <= 0:  # Target day already happened this week
-                days_ahead += 7
-            return today + timedelta(days=days_ahead)
-        elif "friday" in val:
-            days_ahead = 4 - today.weekday()  # Friday is 4
-            if days_ahead <= 0:  # Target day already happened this week
-                days_ahead += 7
-            return today + timedelta(days=days_ahead)
-        elif re.match(r"\d{1,2}/\d{1,2}/\d{2,4}", val):
-            try:
-                parsed_date = pd.to_datetime(val, errors="coerce")
-                return parsed_date.date() if not pd.isna(parsed_date) else pd.NaT
-            except:
-                return pd.NaT
-        else:
-            return pd.NaT
-    else:
-        return pd.NaT
-
-
-# ------------------------------
-# Add parsed return dates to the DataFrame
-# ------------------------------
-def add_parsed_return_dates(df):
-    df['Parsed Return Date'] = df['Expected Return Date'].apply(parse_fuzzy_date)
-
-
-# ------------------------------
-# Interactive Row Inspection Loop
-# ------------------------------
 def inspect_rows(df):
     print(f"\nDataFrame loaded with {len(df)} rows.")
     print("Enter a row number to inspect it. Enter '0' to quit.\n")
@@ -94,16 +37,39 @@ def inspect_rows(df):
         except ValueError:
             print("Invalid input. Please enter a number.\n")
 
-# ------------------------------
-# print unique values
-# ------------------------------
-
-def print_unique_return_dates(df):
+def inspect_unique_values(df):
     unique_values = df['Expected Return Date'].dropna().unique()
     print(f"\nFound {len(unique_values)} unique values in 'Expected Return Date':\n")
+    datetimes = {}
+    nondatetimes = {}
     for i, val in enumerate(unique_values, 1):
-        if not isinstance(val, datetime):  # Just 'datetime', not 'datetime.datetime'
-            print(f"{i}. {val}")
+        if isinstance(val, datetime):  # Just 'datetime', not 'datetime.datetime'
+            datetimes[i] = val
+        else:
+            nondatetimes[i] = val
+    
+    for key, value in datetimes.items():
+        print(f"{key} -> {value}")
+    for key, value in nondatetimes.items():
+        print(f"{key} -> {value}")
+ 
+def parse_row(row):
+    parser = FuzzyDateParser()
+    value = row['Expected Return Date']
+    base = row['Date'] if isinstance(row['Date'], (datetime, pd.Timestamp)) else None
+    return parser.parse(value, base_date=base)
+
+
+def print_overdue_rows(df):
+    today = datetime.today().date()
+    overdue = df[(df['Parsed Return Date'].notna()) & (df['Parsed Return Date'] < today)]
+
+    print("\n=== OVERDUE CHECKOUTS ===")
+    if overdue.empty:
+        print("No overdue checkouts found.")
+    else:
+        print(overdue[['Expected Return Date', 'Date', 'Parsed Return Date']])
+
 
 
 # ------------------------------
@@ -114,8 +80,14 @@ if __name__ == "__main__":
     FILE_PATH = "LIB 80 Equipment Checkouts.xlsx"
     df = load_checkout_data(FILE_PATH)
 
-    if df is not None:
-        add_parsed_return_dates(df)
+    inspect = input('would you like to inspect the data before parsing?').lower().strip()
+    if inspect == 'yes':
+        print(df.head())
         inspect_rows(df)
-        print_unique_return_dates(df)
+        inspect_unique_values(df)
+
+    if df is not None:
+        df['Parsed Return Date'] = df.apply(parse_row, axis=1)
+    
+    print_overdue_rows(df)
 
