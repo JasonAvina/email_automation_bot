@@ -71,11 +71,42 @@ def check_for_overdue(df):
             overdue_indices.append(index)
     return overdue_indices
 
-def print_overdue(overdue_indices):
-    for index in overdue_indices:
-        print(f"\n=== OVERDUE ROW {index} ===")
-        print(df.loc[index])
-        print()
+def print_overdue(df, overdue_indices):
+    today = datetime.today().date()
+    print(f"\nToday's date: {today}")
+    print("Press Enter to view the next overdue row, type a row number to jump to it, or 'q' to quit.\n")
+
+    position = 0
+    while 0 <= position < len(overdue_indices):
+        index = overdue_indices[position]
+        row = df.loc[index]
+        parsed_date = row['Parsed Return Date']
+        estimated_excel_row = index + 2  # 0-indexed + header row
+
+        print(f"\n=== OVERDUE ROW {index} (est. Excel row {estimated_excel_row}) ({position + 1} of {len(overdue_indices)}) ===")
+        print(row.to_string())
+        print("\n--- Key Dates ---")
+        print(f"Checkout Date:        {row.get('Date', 'N/A')}")
+        print(f"Expected Return Date: {row.get('Expected Return Date', 'N/A')}")
+        print(f"Parsed Return Date:   {parsed_date}")
+        print("-" * 60)
+
+        user_input = input("Next [Enter] | Jump to row [number] | Quit [q]: ").strip().lower()
+        if user_input == 'q':
+            print("Exiting overdue review.")
+            break
+        elif user_input.isdigit():
+            pos = int(user_input) - 1
+            if 0 <= pos < len(overdue_indices):
+                position = pos
+            else:
+                print(f"Invalid row number. Must be between 1 and {len(overdue_indices)}.")
+        else:
+            position += 1
+
+
+
+
 
 # ------------------------------
 # Main Logic
@@ -94,8 +125,8 @@ if __name__ == "__main__":
     if df is not None:
         parser = FuzzyDateParser(df)
         parser.df['Parsed Return Date'] = parser.df.apply(parser.parse_row, axis=1)
-        overdue_list = check_for_overdue(df)
-        print_overdue(overdue_list)
+        overdue_list = check_for_overdue(parser.df)
+        print_overdue(parser.df, overdue_list)
 
     
     
