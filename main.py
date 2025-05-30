@@ -52,9 +52,6 @@ def inspect_unique_values(df):
         print(f"{key} -> {value}")
     for key, value in nondatetimes.items():
         print(f"{key} -> {value}")
- 
-
-
 
 def print_overdue_rows(df):
     today = datetime.today().date()
@@ -66,7 +63,19 @@ def print_overdue_rows(df):
     else:
         print(overdue[['Expected Return Date', 'Date', 'Parsed Return Date']])
 
+def check_for_overdue(df):
+    today = datetime.today().date()
+    overdue_indices = []
+    for index, row in df.iterrows():
+        if row['Parsed Return Date'] is not None and row['Parsed Return Date'] < today:
+            overdue_indices.append(index)
+    return overdue_indices
 
+def print_overdue(overdue_indices):
+    for index in overdue_indices:
+        print(f"\n=== OVERDUE ROW {index} ===")
+        print(df.loc[index])
+        print()
 
 # ------------------------------
 # Main Logic
@@ -85,6 +94,10 @@ if __name__ == "__main__":
     if df is not None:
         parser = FuzzyDateParser(df)
         parser.df['Parsed Return Date'] = parser.df.apply(parser.parse_row, axis=1)
+        overdue_list = check_for_overdue(df)
+        print_overdue(overdue_list)
+
+    
     
     print_overdue_rows(df)
 

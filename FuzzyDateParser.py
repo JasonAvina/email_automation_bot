@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 from dateutil import parser
+import pandas as pd
 import re
 
 class FuzzyDateParser:
@@ -51,7 +52,7 @@ class FuzzyDateParser:
     def parse_row(self, row):
         exp_ret_date = row['Expected Return Date']
         base_date = row['Date'] if isinstance(row['Date'], (datetime, pd.Timestamp)) else None
-        return parser.parse(exp_ret_date, base_date=base_date)
+        return self.parse(exp_ret_date, base_date=base_date)
     
     def parse(self, date_str, base_date=None):
         if not date_str or not isinstance(date_str, str):
