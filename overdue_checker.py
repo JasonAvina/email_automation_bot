@@ -4,9 +4,10 @@ import re
 from FuzzyDateParser import FuzzyDateParser
 
 
-
+#called after Parsed Return Data is created, and returns the rows where PRD is < today
 def print_overdue_rows(df):
     today = datetime.today().date()
+    #adding a parsed return date column to the df
     overdue = df[(df['Parsed Return Date'].notna()) & (df['Parsed Return Date'] < today)]
 
     print("\n=== OVERDUE CHECKOUTS ===")
