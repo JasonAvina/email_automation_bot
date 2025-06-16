@@ -3,7 +3,7 @@
 import pandas as pd
 from datetime import datetime, timedelta
 import re
-from data_load import load_checkout_data, inspect_rows, inspect_unique_values
+from data_load import load_checkout_data, inspect_rows
 from overdue_checker import print_overdue, check_for_overdue, print_overdue_rows
 from FuzzyDateParser import FuzzyDateParser
 
@@ -18,10 +18,10 @@ if __name__ == "__main__":
     FILE_PATH = "checkouts.xlsx"
     df = load_checkout_data(FILE_PATH)
 
-    # inspect = input('would you like to inspect the data before parsing?').lower().strip()
-    # if inspect == 'yes':
-    #     print(df.head())
-    #     inspect_rows(df)
+    inspect = input('would you like to inspect the data before parsing?').lower().strip()
+    if inspect == 'yes':
+        print(df.head())
+        inspect_rows(df)
     #     inspect_unique_values(df)
 
     # if df is not None:
