@@ -38,18 +38,18 @@ def inspect_rows(df):
         except ValueError:
             print("Invalid input. Please enter a number.\n")
 
-# # def inspect_unique_values(df):
-#     unique_values = df['Expected Return Date'].dropna().unique()
-#     print(f"\nFound {len(unique_values)} unique values in 'Expected Return Date':\n")
-#     datetimes = {}
-#     nondatetimes = {}
-#     for i, val in enumerate(unique_values, 1):
-#         if isinstance(val, datetime):  # Just 'datetime', not 'datetime.datetime'
-#             datetimes[i] = val
-#         else:
-#             nondatetimes[i] = val
+def inspect_unique_values(df):
+    unique_values = df['Date Due'].dropna().unique()
+    print(f"\nFound {len(unique_values)} unique values in 'Expected Return Date':\n")
+    datetimes = {}
+    nondatetimes = {}
+    for i, val in enumerate(unique_values, 1):
+        if isinstance(val, datetime):  # Just 'datetime', not 'datetime.datetime'
+            datetimes[i] = val
+        else:
+            nondatetimes[i] = val
     
-#     for key, value in datetimes.items():
-#         print(f"{key} -> {value}")
-#     for key, value in nondatetimes.items():
-#         print(f"{key} -> {value}")
+    for key, value in datetimes.items():
+        print(f"{key} -> {value}")
+    for key, value in nondatetimes.items():
+        print(f"{key} -> {value}")
