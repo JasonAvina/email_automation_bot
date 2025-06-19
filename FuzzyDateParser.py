@@ -10,26 +10,25 @@ class FuzzyDateParser:
 
     #this adds a column to the dataframe of 'expected return dates' that are in the datetime form
     def add_parsed_column(self):
-        self.df['Parsed Return Date'] = self.df.apply(self.parse_row, axis = 1)
+        self.df['Due Date'] = self.df.apply(self.parse_row, axis = 1)
         
     # This function will do a few things:
     # - if row value is in datetime format, then value is returned
     # - else it will call parse(checkout_date, unparsed_return_date) method
     # This will convert the unparsed_return_date to a parsed_return_date in the proper format. 
     def parse_row(self, row):
+        #if the item has been returned, return the due date
         if pd.notna(row['Date Returned']):
-            if isinstance(row['Date Returned'], datetime):
-                return row['Date Returned']
-            else:
-                checkout_date = row['Date Checked Out']
-                unparsed_return_date = row['Date Due']
-                parsed_return_date = dateparser.parse(unparsed_return_date, settings={
-                    'RELATIVE_BASE': checkout_date,
-                    'PREFER_DATES_FROM': 'future'
-            })
-            return parsed_return_date
+            return row['Date Due']
+        #if return date is empty(item not returned) then parse the due date and return it
         else:
-            return row['Date Returned']
+            checkout_date = datetime.strptime(row['Date Checked Out'], '%Y-%m-%d')
+            unparsed_due_date = datetime.strptime(row['Date Due'], '%Y-%m-%d')
+            parsed_return_date = dateparser.parse(unparsed_due_date, settings={
+                'RELATIVE_BASE': checkout_date,
+                'PREFER_DATES_FROM': 'future'
+        })
+        return parsed_return_date
 
 
             

@@ -23,12 +23,11 @@ if __name__ == "__main__":
         print(df.head())
         inspect_rows(df)
         #inspect_unique_values(df)
-    else:
-        if df is not None:
-            parser = FuzzyDateParser(df)
-            parser.add_parsed_column()
-            #overdue_list = parser.get_overdue_rows()
-            #parser.print_overdue(overdue_list)
+    parser = FuzzyDateParser(df)
+    parser.add_parsed_column()
+    parser.df.head()
+    #overdue_list = parser.get_overdue_rows()
+    #parser.print_overdue(overdue_list)
 
 
     
