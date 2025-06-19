@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from dateutil import parser
-from dateparser import parse
+import dateparser
 import pandas as pd
 import re
 
@@ -21,10 +21,12 @@ class FuzzyDateParser:
             return row['Date Returned']
         
         checkout_date = row['Date Checked Out']
+        if isinstance(checkout_date, str):
+            checkout_date = parser.parse(checkout_date)
         unparsed_return_date = row['Date Due']
         parsed_return_date = dateparser.parse(unparsed_return_date, settings={
-            'RELATIVE BASE': checkout_date,
-            'PREFER DATES FROM': 'future'
+            'RELATIVE_BASE': checkout_date,
+            'PREFER_DATES_FROM': 'future'
         })
         return parsed_return_date
 
