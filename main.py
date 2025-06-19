@@ -25,7 +25,6 @@ if __name__ == "__main__":
         #inspect_unique_values(df)
     parser = FuzzyDateParser(df)
     parser.add_parsed_column()
-    parser.df.head()
     #overdue_list = parser.get_overdue_rows()
     #parser.print_overdue(overdue_list)
 
