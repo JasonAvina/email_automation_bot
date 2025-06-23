@@ -1,9 +1,7 @@
 #!/opt/anaconda3/bin/python3
 
 import pandas as pd
-from datetime import datetime, timedelta
-import re
-from FuzzyDateParser import FuzzyDateParser
+from datetime import datetime
 
 
 
