@@ -9,6 +9,8 @@ This bot reads an Excel file of equipment checkouts and emails professors if the
 - If the file loads successfully:
     - Call add_parsed_return_dates() to parse fuzzy return dates
     - Call inspect_rows() to interactively view rows
+- Store the data in the Parser Class for grouping together functions
+- call 
 
 
 ## Program Steps
