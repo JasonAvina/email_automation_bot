@@ -1,3 +1,4 @@
+
 # Equipment Reminder Bot
 
 This bot reads an Excel file of equipment checkouts and emails professors if their items are overdue.
@@ -10,8 +11,9 @@ This bot reads an Excel file of equipment checkouts and emails professors if the
     - Call add_parsed_return_dates() to parse fuzzy return dates
     - Call inspect_rows() to interactively view rows
 - Store the data in the Parser Class for grouping together functions
-- call 
-
+- call OpenAI api to on batched rows to parse data with 1 api call
+-check for overdue rows
+-automate emails using microsoft outlook api
 
 ## Program Steps
 
@@ -32,3 +34,7 @@ This bot reads an Excel file of equipment checkouts and emails professors if the
 - [ ] Add logging of sent emails
 - [ ] Group multiple items per professor into one email
 - [ ] Format and test email sending
+=======
+# email_automation_bot
+This bot uses an uploaded excel file to generate weekly emails to library patrons who have overdue books
+
