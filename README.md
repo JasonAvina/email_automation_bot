@@ -24,17 +24,8 @@ This bot reads an Excel file of equipment checkouts and emails customers if thei
 
 ## How to Run
 
-1. Open the terminal or double-click `equipment_bot.pyw`
-2. Make sure the Excel file is in the same folder (or adjust `FILE_PATH`)
-3. Check output in the terminal or logs
-
-## To Do
-
-- [ ] Fix Excel path if using Box Drive
-- [ ] Add logging of sent emails
-- [ ] Group multiple items per professor into one email
-- [ ] Format and test email sending
-=======
-# email_automation_bot
-This bot uses an uploaded excel file to generate weekly emails to library patrons who have overdue books
+1. Clone repo
+2. Make sure the Excel file is in the same folder as main.py
+3. Replace filepath in main.py with filepath of excel file
+4. Run program
 
