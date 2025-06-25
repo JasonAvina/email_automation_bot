@@ -1,7 +1,7 @@
 
 # Equipment Reminder Bot
 
-This bot reads an Excel file of equipment checkouts and emails professors if their items are overdue.
+This bot reads an Excel file of equipment checkouts and emails customers if their items are overdue.
 
 # Structure
 
@@ -20,7 +20,7 @@ This bot reads an Excel file of equipment checkouts and emails professors if the
 ✅ Load `.xlsx` file  
 ✅ Add 'Parsed Return Date' column to dataframe
 🔜 Identify overdue items and make a list
-🔜 Send emails to responsible professors on the list
+🔜 Send emails to responsible customers on the list
 
 ## How to Run
 
